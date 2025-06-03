@@ -42,23 +42,6 @@ ACTIVITY_CATEGORIES = [
 
 def log_activity(user):
     print("\n📝 Log a New Activity")
-
-    # Select category first
-    print("Select a category:")
-    for i, category in enumerate(ACTIVITY_CATEGORIES, 1):
-        print(f"{i}. {category}")
-    
-    try:
-        category_choice = int(input("Enter category number: ").strip())
-        if not 1 <= category_choice <= len(ACTIVITY_CATEGORIES):
-            raise ValueError
-    except ValueError:
-        print("❌ Invalid category selection.")
-        return
-
-    selected_category = ACTIVITY_CATEGORIES[category_choice - 1][2:]  # Remove emoji
-
-    # Proceed with the rest of the details
     name = input("Activity name: ").strip()
     if not name:
         print("❌ Activity name cannot be empty.")
@@ -72,21 +55,32 @@ def log_activity(user):
         print("❌ Invalid duration. Please enter a number.")
         return
 
+    print("\nSelect a category:")
+    for i, category in enumerate(ACTIVITY_CATEGORIES, 1):
+        print(f"{i}. {category}")
+    
+    try:
+        category_choice = int(input("Enter category number: ").strip())
+        if not 1 <= category_choice <= len(ACTIVITY_CATEGORIES):
+            raise ValueError
+    except ValueError:
+        print("❌ Invalid category selection.")
+        return
+
     notes = input("Optional notes: ").strip()
 
     activity = Activity(
         name=name,
         date=date,
         duration=duration,
-        category=selected_category,
+        category=ACTIVITY_CATEGORIES[category_choice - 1][2:],  # Remove emoji
         notes=notes,
         user_id=user.id
     )
 
     session.add(activity)
     session.commit()
-    print(f"✅ '{name}' activity logged successfully under '{selected_category}' category!")
-
+    print(f"✅ '{name}' activity logged successfully!")
 
 def create_or_login_user():
     print("\n👤 Welcome to Activity Tracker")
